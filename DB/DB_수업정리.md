@@ -205,6 +205,56 @@ END;
 PIPE ROW(데이터);
 ```
 ---
+🔹 예외 처리
+```sql
+ BEGIN
+    실행문;
+EXCEPTION
+    WHEN 예외 THEN 처리문;
+END;
+```
+---
+
+🔹OPEN ... FOR + USING
+```
+- OPEN ... FOR : 오라클 PL/SQL에서 OPEN cursor_name FOR 구문은 일반적인 CURSOR 선언과 달리 OPEN ... FOR를 사용하면 실행 시점에 퀴리를 
+결정하거나 결과를 외부로 전달(REF CURSOR)할 수 있는 유연성을 갖게 된다.
+
+```
+```
+- USING :
+동적 SQL에서 값을 안전하게 전달하는 문법 SQL , Injection 방지 + 성능 향상
+
+👉 주로 같이 쓰는 것
+
+- EXECUTE IMMEDIATE
+- OPEN ... FOR
+```
+---
+✔ OPEN ... FOR + USING 코드 예시
+```sql
+DECLARE
+    TYPE ref_cursor IS REF CURSOR;
+    v_cursor ref_cursor;
+
+    v_dept VARCHAR2(50) := '컴퓨터공학';
+    v_name students.name%TYPE;
+BEGIN
+    OPEN v_cursor FOR
+        'SELECT name FROM students WHERE dept = :dept'
+        USING v_dept;
+
+    LOOP
+        FETCH v_cursor INTO v_name;
+        EXIT WHEN v_cursor%NOTFOUND;
+
+        DBMS_OUTPUT.PUT_LINE(v_name);
+    END LOOP;
+
+    CLOSE v_cursor;
+END;
+```
+---
 ### 6. 📌 실전 응용 (학사관리 시스템)
 🔹 테이블 구조
 | 테이블         | 설명   |
